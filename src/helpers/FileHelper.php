@@ -59,7 +59,7 @@ class FileHelper
             ],
         ]);
         // If this is a file path such as for the `manifest.json`, add a FileDependency so it's cache bust if the file changes
-        if (!UrlHelper::isAbsoluteUrl($pathOrUrl)) {
+        if (!self::isAbsoluteUrl($pathOrUrl)) {
             $dependency = new ChainedDependency([
                 'dependencies' => [
                     new FileDependency([
@@ -79,7 +79,7 @@ class FileHelper
             self::CACHE_KEY . $cacheKeySuffix . $pathOrUrl,
             function() use ($pathOrUrl, $callback) {
                 $contents = null;
-                if (UrlHelper::isAbsoluteUrl($pathOrUrl)) {
+                if (self::isAbsoluteUrl($pathOrUrl)) {
                     $response = self::fetchResponse($pathOrUrl);
                     if ($response && $response->getStatusCode() === 200) {
                         $contents = $response->getBody()->getContents();
@@ -153,5 +153,20 @@ class FileHelper
         $path = self::createUrl(self::SCRIPTS_DIR, $name);
 
         return self::fetch($path, null, $cacheKeySuffix) ?? '';
+    }
+
+    /**
+     * Returns whether the path or URL is an absolute URL
+     *
+     * @param string $pathOrUrl
+     * @return bool
+     */
+    public static function isAbsoluteUrl(string $pathOrUrl): bool
+    {
+        if (str_contains($pathOrUrl, '//')) {
+            return UrlHelper::isAbsoluteUrl($pathOrUrl);
+        }
+
+        return false;
     }
 }
