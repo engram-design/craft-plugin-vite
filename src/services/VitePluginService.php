@@ -12,6 +12,7 @@ namespace nystudio107\pluginvite\services;
 
 use Craft;
 use craft\helpers\App;
+use craft\helpers\FileHelper as CraftFileHelper;
 use nystudio107\pluginvite\helpers\FileHelper;
 
 /**
@@ -68,7 +69,7 @@ class VitePluginService extends ViteService
             $bundle->sourcePath,
             true
         );
-        $this->manifestPath = FileHelper::createUrl($bundle->sourcePath, self::MANIFEST_FILE_NAME);
+        $this->manifestPath = CraftFileHelper::normalizePath($bundle->sourcePath . '/' . self::MANIFEST_FILE_NAME);
         if ($baseAssetsUrl !== false) {
             $this->serverPublic = $baseAssetsUrl;
         }
